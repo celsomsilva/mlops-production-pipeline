@@ -12,23 +12,23 @@ from mlops_api.api import app
 
 client = TestClient(app)
 
-
+"""
+Health endpoint should respond with service status.
+"""
 def test_health():
-    """
-    Health endpoint should respond with service status.
-    """
     response = client.get("/health")
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
 
-def test_predict():
-    """
-    Prediction endpoint should accept valid input and return a prediction.
+"""
+Prediction endpoint should accept valid input and return a prediction.
 
-    The model is mocked to avoid coupling tests to training artifacts.
-    """
+The model is mocked to avoid coupling tests to training artifacts.
+"""
+def test_predict():
+
     # Mock model loading to keep tests independent from filesystem state
     with patch("mlops_api.predict.joblib.load") as mock_load:
         mock_model = mock_load.return_value
