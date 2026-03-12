@@ -1,4 +1,4 @@
-# mlops-mini-prod
+# mlops-production-pipeline
 
 A minimal, end-to-end **MLOps project** designed to practice taking a Machine Learning model from experimentation to production.
 
@@ -8,18 +8,18 @@ This repository shows the complete lifecycle: train, package, serve, containeriz
 
 I chose scikit-learn here because the focus is MLOps, not model complexity.
 
-The repository [document-ai-mini-prod](https://github.com/celsomsilva/document-ai-mini-prod) is derived from this repository, adapting its minimal production structure to a Document AI pipeline.
+The repository [document-ai-pipeline](https://github.com/celsomsilva/document-ai-pipeline) is derived from this repository, adapting its minimal production structure to a Document AI pipeline.
 
 ---
 
 ## Live demo
 
 
-https://mlops-mini-prod.onrender.com
+https://mlops-production-pipeline.onrender.com
 
 Documentation and Execution:
 
-https://mlops-mini-prod.onrender.com/docs
+https://mlops-production-pipeline.onrender.com/docs
 
 
 ---
@@ -60,7 +60,7 @@ Think of it as a **production-ready template** for future ML systems.
 ## Project structure
 
 ```
-mlops-mini-prod/
+mlops-production-pipeline/
   src/
    mlops_api/
         __init__.py
@@ -286,4 +286,4 @@ This project was developed by an engineer and data scientist with a background i
 ## Contact
 
 * [LinkedIn](https://linkedin.com/in/celso-m-silva)
-* Or open an [issue](https://github.com/celsomsilva/mlops-mini-prod/issues)
+* Or open an [issue](https://github.com/celsomsilva/mlops-production-pipeline/issues)
