@@ -1,142 +1,117 @@
-# mlops-production-pipeline
+## mlops-production-pipeline
 
-A minimal, end-to-end **MLOps project** designed to practice taking a Machine Learning model from experimentation to production.
+A small end-to-end MLOps project built to practice the engineering around a Machine Learning model.
 
-The goal here is not to build the smartest model, but to build a model that can actually **run in production**.
+The model is simple on purpose. The main focus is the pipeline around it:
 
-This repository shows the complete lifecycle: train, package, serve, containerize, test, CI and deploy-ready
+- training
+- model artifacts
+- inference API
+- tests
+- Docker
+- CI
+- deployment
 
-I chose scikit-learn here because the focus is MLOps, not model complexity.
+I used scikit-learn because model complexity is not the focus of this repository.
 
-The repository [document-ai-pipeline](https://github.com/celsomsilva/document-ai-pipeline) is derived from this repository, adapting its minimal production structure to a Document AI pipeline.
+The [document-ai-pipeline](https://github.com/celsomsilva/document-ai-pipeline) repository was later derived from this project, reusing part of this structure for a Document AI pipeline.
 
 ---
 
 ## Live demo
 
-
 [User-facing demo](https://mlops-mini-prod.onrender.com)
 
 [Developer API docs](https://mlops-mini-prod.onrender.com/docs)
 
-
 ---
 
-## Purpose
+## Workflow
 
-Many ML projects stop at notebooks.
-
-This one focuses on what companies actually expect in real-world systems:
-
-- reproducible training
-- saved model artifacts
-- inference API
-- Docker container
-- automated tests
-- CI pipeline
-
-Think of it as a **production-ready template** for future ML systems.
-
----
-
-## Full workflow
-
-1. Train model  
-  
-2. Save artifact  
-  
-3. API loads model  
-  
-4. Docker container  
-  
-5. Tests + CI validation  
-  
-6. Ready to deploy  
+1. Train the model
+2. Save the model artifact
+3. Load the model through the API
+4. Run the application in Docker
+5. Run tests and CI checks
+6. Deploy
 
 ---
 
 ## Project structure
 
-```
+```text
 mlops-production-pipeline/
+
   src/
-   mlops_api/
-        __init__.py
-   	api.py			#FastAPI application (/health, /predict)
-   	train.py			#training script that generates the model     
-   	predict.py			#inference logic
+    mlops_api/
+      __init__.py
+      api.py          # FastAPI application (/health, /predict)
+      train.py        # training script
+      predict.py      # inference logic
+
   templates/
-     index.html		# home page
+    index.html        # home page
 
   static/
-     style.css			# css file
-  
-  models/			#saved artifacts (model.joblib + metadata.json)
-      model.joblib
-      metadata.jso
-  
-  tests/			#automated tests using pytest
-  
-  Dockerfile			#application container
-  compose.yaml			#local docker execution
-  .github/workflows/ci.yaml		# CI pipeline (GitHub Actions)
-  Makefile			#shortcut commands
-  requirements.txt		#dependencies
-  pyproject.toml 		# package configuration (src-layout)
+    style.css         # CSS file
+
+  models/
+    model.joblib
+    metadata.json
+
+  tests/              # pytest tests
+
+  Dockerfile
+  compose.yaml
+  .github/workflows/ci.yaml
+  Makefile
+  requirements.txt
+  pyproject.toml
   README.md
   .gitignore
 ```
 
-> The project follows the **src-layout packaging pattern**, so the application code is installed as a Python package (`mlops_api`).
-
-
+The project uses the `src-layout` packaging pattern. Application code is installed as the Python package `mlops_api`.
 
 ---
 
-## Model description
+## Model
 
-This service exposes a machine learning model trained to predict **weekly retail sales**.
+The API exposes a Ridge regression model that predicts weekly retail sales.
 
-
-### Target variable
+### Target
 
 `weekly_sales`
 
-Represents the total weekly revenue.
-
+Total weekly revenue.
 
 ### Features
 
-- price: product price
-- promotion: promotion active (0 or 1)
-- temperature: environmental temperature
+- `price`: product price
+- `promotion`: promotion active (`0` or `1`)
+- `temperature`: environmental temperature
 
-
-### Model type
-
-Ridge regression.
-
-The model is intentionally simple. The focus of this project is the engineering pipeline, not model complexity.
+The model itself is deliberately small because this repository is mainly about the MLOps structure around it.
 
 ---
 
-## Running locally(development mode)
+## Running locally
 
-### Create and activate a virtual environment
+### Create a virtual environment
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### Install dependencies and the local package
+### Install dependencies
 
 ```bash
 pip install -r requirements.txt
 pip install -e .
 ```
 
-### Train the model(offline step)
+### Train the model
 
 ```bash
 make train
@@ -154,26 +129,27 @@ make test
 make run
 ```
 
-Open:
-http://localhost:8000/docs
+Swagger UI:
 
-Interactive Swagger UI is available automatically.
+```text
+http://localhost:8000/docs
+```
 
 ---
 
-## Running with Docker (production-like environment)
+## Docker
 
 ```bash
 make docker
 ```
 
-or
+or:
 
 ```bash
 docker compose up --build
 ```
 
-Running tests
+Run tests with:
 
 ```bash
 make test
@@ -181,57 +157,67 @@ make test
 
 ---
 
-## CI/CD (GitHub Actions)
+## CI
 
-On every push or pull request the pipeline automatically:
+GitHub Actions runs on pushes and pull requests.
+
+The pipeline:
 
 - checks out the repository
-- sets up a clean Python environment
+- creates a clean Python environment
 - installs dependencies
-- runs tests
-- builds Docker image
-- fails fast if something breaks
+- runs the tests
+- builds the Docker image
 
-This guarantees the project is always deployable.
+A failed test or Docker build causes the workflow to fail.
 
 ---
 
-## API Endpoints
+## API endpoints
 
-### Health check 
- 
-GET /health  
+### Health check
 
-Response: 
+```http
+GET /health
+```
 
+Response:
+
+```json
 {
   "status": "ok"
 }
+```
 
-### Prediction  
+### Prediction
 
-- Go to "POST /predict"
-- "Try it out"   
-- Input, for example:
+Use:
 
+```http
+POST /predict
+```
 
+Example input:
+
+```json
 {
   "price": 12.5,
   "promotion": 1,
   "temperature": 25
 }
+```
 
-Click on "Execute".
+Example output:
 
-
-Output:
-
+```json
 {
   "prediction": 180.3,
   "model_version": "2026-02-05T18:12:00",
   "rmse": 10.63
 }
+```
 
+The endpoint can also be tested through Swagger using the `/docs` page.
 
 ---
 
@@ -243,37 +229,6 @@ Output:
 - Docker
 - pytest
 - GitHub Actions
-
----
-
-## Why this project exists
-
-This project was created as a practical exercise to bridge the gap between:
-
-> “Model works on my notebook”
-> and
-> “Model runs reliably in production”.
-
-It intentionally keeps the ML simple and focuses on engineering best practices.
-
-After this template is in place, it can easily be reused for:
-
-- forecasting systems
-- recommendation engines
-- NLP / LLM services
-- RAG pipelines
-- any ML microservice
-
----
-
-## Possible extensions
-
-- MLflow model registry
-- structured logging
-- Prometheus metrics
-- automatic deployment (Render / Fly.io / Railway)
-- batch inference
-- LLM integration
 
 ---
 
